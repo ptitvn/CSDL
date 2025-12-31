@@ -20,9 +20,7 @@ VALUES
 (2, 1, '2025-12-29'),
 (2, 3, '2025-12-29');
 
-SELECT *
-FROM Enrollment;
+SELECT * FROM Enrollment;
 
-SELECT *
-FROM Enrollment
+SELECT * FROM Enrollment
 WHERE student_id = 1;
