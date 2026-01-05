@@ -1,4 +1,3 @@
-DROP DATABASE IF EXISTS session5;
 CREATE DATABASE session5;
 USE session5;
 
