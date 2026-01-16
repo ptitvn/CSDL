@@ -1,6 +1,4 @@
-CREATE DATABASE IF NOT EXISTS mini_social_network
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS mini_social_network;
 
 USE mini_social_network;
 
@@ -10,7 +8,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE posts (
     post_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -20,7 +18,7 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id)
         REFERENCES users(user_id)
         ON DELETE CASCADE
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE comments (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +32,7 @@ CREATE TABLE comments (
     FOREIGN KEY (user_id)
         REFERENCES users(user_id)
         ON DELETE CASCADE
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE likes (
     user_id INT NOT NULL,
@@ -47,7 +45,7 @@ CREATE TABLE likes (
     FOREIGN KEY (post_id)
         REFERENCES posts(post_id)
         ON DELETE CASCADE
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE friends (
     user_id INT NOT NULL,
@@ -62,4 +60,4 @@ CREATE TABLE friends (
         REFERENCES users(user_id)
         ON DELETE CASCADE,
     CHECK (status IN ('pending', 'accepted'))
-) ENGINE=InnoDB;
+);

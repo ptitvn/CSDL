@@ -5,14 +5,14 @@ CREATE TABLE user_log (
     user_id INT,
     action VARCHAR(100),
     log_time DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE post_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT,
     action VARCHAR(100),
     log_time DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE like_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -20,7 +20,7 @@ CREATE TABLE like_log (
     post_id INT,
     action VARCHAR(50),
     log_time DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE friend_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -28,7 +28,7 @@ CREATE TABLE friend_log (
     friend_id INT,
     action VARCHAR(50),
     log_time DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+);
 
 DELIMITER $$
 
@@ -85,7 +85,10 @@ CREATE TRIGGER trg_like_insert
 AFTER INSERT ON likes
 FOR EACH ROW
 BEGIN
-    UPDATE posts SET like_count = like_count + 1 WHERE post_id = NEW.post_id;
+    UPDATE posts
+    SET like_count = like_count + 1
+    WHERE post_id = NEW.post_id;
+
     INSERT INTO like_log(user_id, post_id, action)
     VALUES (NEW.user_id, NEW.post_id, 'LIKE');
 END$$
@@ -94,7 +97,10 @@ CREATE TRIGGER trg_like_delete
 AFTER DELETE ON likes
 FOR EACH ROW
 BEGIN
-    UPDATE posts SET like_count = like_count - 1 WHERE post_id = OLD.post_id;
+    UPDATE posts
+    SET like_count = like_count - 1
+    WHERE post_id = OLD.post_id;
+
     INSERT INTO like_log(user_id, post_id, action)
     VALUES (OLD.user_id, OLD.post_id, 'UNLIKE');
 END$$
@@ -166,7 +172,8 @@ BEGIN
     START TRANSACTION;
 
     IF NOT EXISTS (
-        SELECT 1 FROM posts WHERE post_id = p_post_id AND user_id = p_user_id
+        SELECT 1 FROM posts
+        WHERE post_id = p_post_id AND user_id = p_user_id
     ) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Not owner';
     END IF;
@@ -207,8 +214,8 @@ SELECT * FROM post_log;
 
 CALL sp_create_post(1, '');
 
-INSERT INTO likes VALUES (2,1,NOW());
-INSERT INTO likes VALUES (3,1,NOW());
+INSERT INTO likes VALUES (2, 1, NOW());
+INSERT INTO likes VALUES (3, 1, NOW());
 
 SELECT post_id, like_count FROM posts;
 
@@ -217,26 +224,27 @@ DELETE FROM likes WHERE user_id = 2 AND post_id = 1;
 SELECT post_id, like_count FROM posts;
 SELECT * FROM like_log;
 
-INSERT INTO likes VALUES (3,1,NOW());
+INSERT INTO likes VALUES (3, 1, NOW());
 
-CALL sp_send_friend_request(1,2);
-CALL sp_send_friend_request(1,3);
+CALL sp_send_friend_request(1, 2);
+CALL sp_send_friend_request(1, 3);
 
 SELECT * FROM friends;
 
-CALL sp_send_friend_request(1,1);
+CALL sp_send_friend_request(1, 1);
 
-UPDATE friends SET status = 'accepted'
+UPDATE friends
+SET status = 'accepted'
 WHERE user_id = 1 AND friend_id = 2;
 
 SELECT * FROM friends;
 SELECT * FROM friend_log;
 
-CALL sp_update_friend(1,2,'DELETE');
+CALL sp_update_friend(1, 2, 'DELETE');
 
 SELECT * FROM friends;
 
-CALL sp_delete_post(1,1);
+CALL sp_delete_post(1, 1);
 
 SELECT * FROM posts;
 SELECT * FROM likes;
